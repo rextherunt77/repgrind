@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="RepGrind">
 <meta name="application-name" content="RepGrind">
 <style>
-:root{--bg:#111418;--card:#1b2027;--line:#2a313b;--txt:#e9edf2;--mut:#8a95a3;--acc:#ff5a36;--acc2:#3fb6ff;--ok:#3ccf7a;--warn:#ffc53d}
+:root{--bg:#111418;--card:#1b2027;--line:#2a313b;--txt:#e9edf2;--mut:#8a95a3;--acc:#ff8c00;--ink:#14171c;--acc2:#3fb6ff;--ok:#3ccf7a;--warn:#ffc53d}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:12px 12px 40px;max-width:720px;margin:auto}
 header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
@@ -26,14 +26,14 @@ h1{font-size:17px;margin:0;letter-spacing:.5px}
 .card{background:var(--card);border-radius:14px;padding:14px;margin:10px 0}
 .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .chip{flex:none;background:#262d36;border-radius:999px;padding:8px 12px;font-size:14px;font-weight:600;color:var(--txt);display:flex;gap:6px;align-items:center;border:2px solid transparent}
-.chip.sel{border-color:var(--acc);background:#2c1f1b}
+.chip.sel{border-color:var(--acc);background:#2b1a05}
 .chip b{font-variant-numeric:tabular-nums}
 .chip .d{width:7px;height:7px;border-radius:50%;background:var(--ok)}
 .chip .d.off{background:#c33}.chip .d.ph{background:var(--acc2)}
 .lname{text-align:center;color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.8px}
 .count{font-size:min(34vw,180px);font-weight:800;text-align:center;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-2px}
 .state{text-align:center;color:var(--mut);font-size:14px;margin-top:4px;min-height:20px}
-.state b{color:var(--acc)}
+.state b{color:var(--acc)}.wm b{color:var(--acc);font-weight:inherit}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .k{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
@@ -45,7 +45,7 @@ h1{font-size:17px;margin:0;letter-spacing:.5px}
 button{background:#262d36;color:var(--txt);border:0;border-radius:10px;padding:13px 4px;font-size:14px;font-weight:600;font-family:inherit}
 button:active{transform:scale(.97)}
 button:disabled{opacity:.35}
-button.p{background:var(--acc);color:#fff}
+button.p{background:var(--acc);color:var(--ink)}
 button.big{font-size:20px;padding:16px 4px}
 .row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
 select,input{background:#151a20;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px;font-size:15px}
@@ -65,7 +65,7 @@ details summary{cursor:pointer;color:var(--mut)}
 textarea{width:100%;background:#151a20;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;margin-top:10px;resize:vertical}
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
 .tabs button{padding:10px 2px;font-size:12.5px}
-.tabs button.sel{background:#2c1f1b;box-shadow:inset 0 0 0 2px var(--acc)}
+.tabs button.sel{background:#2b1a05;box-shadow:inset 0 0 0 2px var(--acc)}
 #xBtns button{flex:1 1 30%;padding:13px 8px}
 .gear{background:none;padding:6px;line-height:0;color:var(--mut);border-radius:50%}
 .gear svg{width:24px;height:24px;display:block}
@@ -86,7 +86,7 @@ textarea{width:100%;background:#151a20;color:var(--txt);border:1px solid var(--l
 #tap .tb{position:absolute;bottom:24px;left:16px;right:16px;display:flex;gap:10px}
 #tap .tb button{flex:1;padding:16px}
 #tap .tt{position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;color:var(--mut);font-variant-numeric:tabular-nums;font-size:18px}
-#tap.flash{background:#2a120c}.count.flash{color:var(--acc);transition:none}
+#tap.flash{background:#3a2200}.count.flash{color:var(--acc);transition:none}
 #tap.cd .tc{color:var(--warn)}
 #tap.rest{background:#0b1a2a}
 #tap.done{background:#0c2014}
@@ -108,7 +108,7 @@ textarea{width:100%;background:#151a20;color:var(--txt);border:1px solid var(--l
 #tap .pbw{width:84%;margin-top:18px}
 .lad{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:6px 12px;position:relative;z-index:2}.lad:empty,.mov:empty,.nxt:empty{display:none}
 .lad span{position:relative;min-width:30px;padding:4px 6px;border-radius:7px;background:#2a2f36;color:var(--mut);font-weight:700;font-size:14px;text-align:center;overflow:hidden;font-variant-numeric:tabular-nums}
-.lad span.d{background:#1f5c3a;color:#9fe3b8}.lad span.c{color:#fff;box-shadow:inset 0 0 0 2px var(--acc)}.lad span i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);opacity:.35}.lad span b{position:relative}
+.lad span.d{background:#1f5c3a;color:#9fe3b8}.lad span.c{background:var(--acc);color:var(--ink)}.lad span i{position:absolute;left:0;bottom:0;height:3px;background:var(--ink);opacity:.7}.lad span b{position:relative}
 .mov{color:var(--acc);font-weight:800;font-size:20px;text-transform:uppercase;letter-spacing:1px;text-align:center;line-height:1.2}.mov small{display:block;color:var(--mut);font-size:13px;font-weight:400;text-transform:none;letter-spacing:0}
 .nxt{color:var(--mut);font-size:15px;text-align:center;margin-top:4px}#tap .nxt{font-size:17px}
 #tap .pb{height:16px;border-radius:8px}
@@ -127,7 +127,7 @@ textarea{width:100%;background:#151a20;color:var(--txt);border:1px solid var(--l
 .lrow button.ib{width:44px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;flex:none}
 .lrow button.ib .ic{width:20px;height:20px}
 .chip .no{font-size:11px;font-weight:700;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:0 4px}
-.dlg{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:99;padding:20px}.dbox{background:#1d2128;border-radius:16px;padding:18px;max-width:420px;width:100%}.dbox p{margin:0 0 12px;line-height:1.4}.din{width:100%;box-sizing:border-box;margin-bottom:12px}.dbox .row{justify-content:flex-end}.dok{background:var(--acc);color:#fff}
+.dlg{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:99;padding:20px}.dbox{background:#1d2128;border-radius:16px;padding:18px;max-width:420px;width:100%}.dbox p{margin:0 0 12px;line-height:1.4}.din{width:100%;box-sizing:border-box;margin-bottom:12px}.dbox .row{justify-content:flex-end}.dok{background:var(--acc);color:var(--ink)}
 </style></head><body>
 <script>
 // ===== RepGrind – phone-only engine =====
@@ -317,7 +317,7 @@ textarea{width:100%;background:#151a20;color:var(--txt);border:1px solid var(--l
 })();
 
 </script>
-<header><h1><svg viewBox="-60 -60 120 120" width="26" height="26" aria-hidden="true" style="vertical-align:-5px;margin-right:6px"><rect x="-60" y="-60" width="120" height="120" rx="30" fill="#ff8c00"/><g fill="#b85a00" transform="translate(2 3)"><path transform="translate(-24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(-8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="rotate(62) scale(1.15 1.3)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/></g><g fill="#14171c"><path transform="translate(-24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(-8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="rotate(62) scale(1.15 1.3)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/></g></svg>REPGRIND <small id="ver" style="color:var(--mut);font-weight:500;letter-spacing:0"></small></h1><div class="pill"><span id="batt"></span><span><span id="dot" class="dot"></span> <span id="conn">connecting</span></span>
+<header><h1><svg viewBox="-60 -60 120 120" width="26" height="26" aria-hidden="true" style="vertical-align:-5px;margin-right:6px"><rect x="-60" y="-60" width="120" height="120" rx="30" fill="#ff8c00"/><g fill="#b85a00" transform="translate(2 3)"><path transform="translate(-24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(-8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="rotate(62) scale(1.15 1.3)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/></g><g fill="#14171c"><path transform="translate(-24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(-8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(8 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="translate(24 0) rotate(-9)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/><path transform="rotate(62) scale(1.15 1.3)" d="M0 -38 L5 -25 L3 -18 L8 -6 L6 3 L9 16 L5 38 L1 18 L-2 5 L0 -3 L-4 -16 L-2 -25 Z"/></g></svg><span class="wm">REP<b>GRIND</b></span> <small id="ver" style="color:var(--mut);font-weight:500;letter-spacing:0"></small></h1><div class="pill"><span id="batt"></span><span><span id="dot" class="dot"></span> <span id="conn">connecting</span></span>
 <button class="gear" id="bSet" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
 
 <div class="chips" id="chips"></div>
@@ -513,7 +513,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.1.0'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.2.0'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -838,7 +838,7 @@ function drawRpmChart(reps){
   const mins=Math.max(1,Math.ceil(Math.max(curEl(),reps[reps.length-1]+1)/60000)),b=new Array(mins).fill(0);
   reps.forEach(t=>b[Math.min(mins-1,Math.floor(t/60000))]++);
   const ymax=Math.max(5,Math.ceil(Math.max(...b)*1.2));axes(x,W,H,Lm,B,ymax,'');const bw=(W-Lm)/mins;
-  b.forEach((v,i)=>{const h=(v/ymax)*(H-B-8);x.fillStyle=i===mins-1&&st.s==2?'#ff8f73':css('--acc');x.fillRect(Lm+i*bw+bw*.15,H-B-h,bw*.7,h);
+  b.forEach((v,i)=>{const h=(v/ymax)*(H-B-8);x.fillStyle=i===mins-1&&st.s==2?'#ffb347':css('--acc');x.fillRect(Lm+i*bw+bw*.15,H-B-h,bw*.7,h);
     if(bw>18){x.fillStyle='#e9edf2';x.font='11px sans-serif';x.textAlign='center';x.fillText(v,Lm+i*bw+bw/2,H-B-h-3);x.textAlign='left'}});
   x.fillStyle='#8a95a3';x.font='11px sans-serif';const lab=Math.max(1,Math.ceil(mins/8));for(let i=0;i<mins;i+=lab)x.fillText(i+1,Lm+i*bw+bw/2-3,H-4);
 }
