@@ -572,7 +572,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.6.1'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.6.2'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -622,7 +622,9 @@ $('bReset').onclick=async()=>{if(await ask(T('Save this session to history and r
 let CB={};try{CB=JSON.parse(localStorage.getItem('rc_cb')||'{}')}catch(e){}
 const cbOpts=C=>{const o=['rep'];if(C.m==4&&C.parts.length)o.push('set','round');else if(((C.m==0||C.m==1)&&C.rr>0)||(C.m==2&&C.per>0))o.push('round');return o};
 const cbDef=C=>C.m==4&&C.parts.length?'set':((C.m==0||C.m==1)&&C.rr>0)||(C.m==2&&C.per>0)?'round':'rep';
-function cbNow(){const C=wC(),o=cbOpts(C),v=CB[C.m];return o.includes(v)?v:cbDef(C)}
+function cbFor(C){const o=cbOpts(C),v=CB[C.m];return o.includes(v)?v:cbDef(C)}
+function cbNow(){return cbFor(wC())}
+const wNext=()=>st.s==0||st.s==4?W:wC();   // Setup prepares the next workout, also while the last one still shows its result (2.6.2)
 function cbStep(o){const C=wC(),k=cbNow(),c=o.c;
   if(C.m==4&&C.parts.length&&k!='rep'){if(C.target&&c>=C.target)return 1;const sg=schSets(C);let i=0,into=c;while(i<sg.length-1&&into>=sg[i][2]){into-=sg[i][2];i++}
     let n=sg[i][2]-into;if(k=='round')for(let j=i+1;j<sg.length&&sg[j][0]==sg[i][0];j++)n+=sg[j][2];return Math.max(1,n)}
@@ -643,15 +645,15 @@ $('bPlus').onclick=()=>doPress();
 $('bMinus').onclick=()=>undoPress();
 $('bOne').onclick=()=>{(pressN[sel]=pressN[sel]||[]).push(1);bump(sel,1);lanecmd('plus')};
 const cbNeed=(C,v)=>v=='set'?T('Set needs a rep scheme (21-15-9 …): choose Rep scheme as the workout.'):C.m==2?T('Give the target reps per interval to count by round.'):C.m==0||C.m==1?T('Give "1 round = … reps" in the workout to count by round.'):T('Round works with a rep scheme, For time or AMRAP with a round size, and EMOM with a target.');
-document.querySelectorAll('#cbSeg button').forEach(b=>b.onclick=()=>{const C0=wC();if(!cbOpts(C0).includes(b.dataset.v)){$('cbNote').textContent=cbNeed(C0,b.dataset.v);cbHint=Date.now();return}CB[C0.m]=b.dataset.v;try{localStorage.setItem('rc_cb',JSON.stringify(CB))}catch(e){}dirty=true;render()});
+document.querySelectorAll('#cbSeg button').forEach(b=>b.onclick=()=>{const C0=wNext();if(!cbOpts(C0).includes(b.dataset.v)){$('cbNote').textContent=cbNeed(C0,b.dataset.v);cbHint=Date.now();return}CB[C0.m]=b.dataset.v;try{localStorage.setItem('rc_cb',JSON.stringify(CB))}catch(e){}dirty=true;render()});
 let cbHint=0;
-function cbUI(){const C=wC(),o=cbOpts(C),k=cbNow();
+function cbUI(){const C=wNext(),o=cbOpts(C),k=cbFor(C);
   document.querySelectorAll('#cbSeg button').forEach(b=>{b.classList.toggle('dim',!o.includes(b.dataset.v));b.classList.toggle('on',b.dataset.v==k)});
   if(Date.now()-cbHint<6000)return;
   let n='';if(k=='rep')n=(C.m==0||C.m==1)&&!C.rr?T('One press per rep. Give "1 round = … reps" in the workout to count by round.'):C.m==4?T('One press per rep.'):T('One press per rep.');
   else if(k=='set')n=T('One press finishes the current set: {0} presses for this WOD.',schSets(C).length);
   else if(C.m==4)n=T('One press finishes the current round: {0} presses for this WOD.',C.parts.length);
-  else if(C.m==1)n=T('One press per round of {0} reps. Add the reps of the last, unfinished round with +1 rep.',C.rr);
+  else if(C.m==0||C.m==1)n=T('One press per round of {0} reps. Add the reps of the last, unfinished round with +1 rep.',C.rr);
   else n=T('One press per interval: it adds the reps still missing from {0}.',C.per);
   $('cbNote').textContent=n}
 $('gap').onchange=()=>{localStorage.setItem(GAPK,$('gap').value);dirty=true};
