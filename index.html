@@ -594,7 +594,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.9.1'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.9.2'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -922,7 +922,9 @@ const V_FEM=/female|woman|nainen|samantha|karen|moira|tessa|victoria|allison|ava
 function vList(){if(!synth)return[];return synth.getVoices().filter(v=>v.lang.toLowerCase().replace('_','-').startsWith(V.lang))
   .sort((a,b)=>(V_FEM.test(b.name)-V_MALE.test(b.name))-(V_FEM.test(a.name)-V_MALE.test(a.name)))}
 function vPick(){const l=vList();return l.find(v=>v.name===V.voice)||l[0]||null}
-function say(t,q){if(!synth)return;try{if(!q)synth.cancel();const u=new SpeechSynthesisUtterance(String(t)),v=vPick();u.lang=v?v.lang:V_TAG[V.lang];if(v)u.voice=v;u.rate=1.15;synth.speak(u)}catch(e){}}
+// B-014: Android Chrome drops a phrase spoken right after cancel(), and its speech can get stuck paused: cancel only when something is speaking, resume, then speak a moment later
+function say(t,q){if(!synth)return;try{const go=()=>{try{synth.resume();const u=new SpeechSynthesisUtterance(String(t)),v=vPick();u.lang=v?v.lang:V_TAG[V.lang];if(v)u.voice=v;u.rate=1.15;synth.speak(u)}catch(e){}};
+  if(!q&&(synth.speaking||synth.pending)){synth.cancel();setTimeout(go,60)}else go()}catch(e){}}
 function vFill(){$('vOn').checked=V.on;$('vLang').value=V.lang;$('vEvery').value=V.every;
   const l=vList(),p=vPick(),lang=LANG=='fi'?(V.lang=='fi'?'suomi':'englanti'):(V.lang=='fi'?'Finnish':'English'),g=v=>V_FEM.test(v.name)?' ('+T('female')+')':V_MALE.test(v.name)?' ('+T('male')+')':'';
   $('vVoice').innerHTML=l.length?l.map(v=>`<option value="${esc(v.name)}">${esc(v.name)}${g(v)}</option>`).join(''):`<option value="">${T('Phone default voice')}</option>`;
@@ -1139,6 +1141,7 @@ $('movCloud').addEventListener('click',e=>{const b=e.target.closest('button[data
 $('movN').addEventListener('input',movCloud);movCloud();
 // ---------- F-012: What's new, in plain words; shown once after an update and always in Settings ----------
 const NEWS=[
+ ['2.9.2',['Voice counting works again on Android phones.'],['Ääneen laskeminen toimii taas Android-puhelimissa.']],
  ['2.9.1',['A short tour shows new users around; Settings → Help has the guide and the tour again.','The phone guide is online in English and Finnish (the ? on Setup).'],
           ['Lyhyt esittely näyttää uusille käyttäjille, mistä mikin löytyy; Asetukset → Ohje avaa oppaan ja esittelyn uudelleen.','Puhelinopas on verkossa suomeksi ja englanniksi (Valmistelun ?).']],
  ['2.9.0',['What\'s new is now in Settings, and shows once after an update.','You can switch off the anonymous usage counts in Settings → Layout.'],
