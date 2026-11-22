@@ -404,7 +404,7 @@ body.tabbed #pWod .btns{margin-top:0}#bGo{width:100%;min-height:64px;font-size:2
     <span id="emBox" style="display:none"><span>every</span> <input type="number" id="emIv" min="0.5" max="10" step="0.5" value="1" style="width:64px"> min · <input type="number" id="emReps" min="1" max="99" placeholder="Target" style="width:86px"> <span>reps</span></span>
     <span id="schBox" style="display:none"><input id="sch" value="21-15-9" inputmode="text" style="width:104px"> × <input type="number" id="mov" min="1" max="6" value="2" style="width:56px"> <span>movements</span>
       <input id="movN" placeholder="Movement names, e.g. Thrusters, Pull-ups" style="width:100%;margin-top:8px"></span>
-    <span id="chipBox" style="display:none"><input id="chipL" type="hidden"><div id="chipRows"></div><div class="row" style="margin-top:8px"><input id="chipAdd" style="flex:1;min-width:0"><button id="chipAddB" type="button">Add</button></div><div class="note" id="chipSum" style="margin-top:6px"></div></span>
+    <div id="chipBox" style="display:none;flex-basis:100%;width:100%"><input id="chipL" type="hidden"><div id="chipRows"></div><div class="row" style="margin-top:8px"><input id="movAddIn" style="flex:1;min-width:0"><button id="movAddBtn" type="button">Add</button></div><div class="note" id="chipSum" style="margin-top:6px"></div></div>
     <div id="movCloud"></div>
     <span id="ivBox" style="display:none"><input type="number" id="ivW" min="5" max="600" value="20" style="width:64px"> s <span>work</span> / <input type="number" id="ivR" min="0" max="600" value="10" style="width:64px"> s <span>rest</span> × <input type="number" id="ivN" min="1" max="60" value="8" style="width:56px"></span>
   </div>
@@ -597,7 +597,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.11.0'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.11.1'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -757,7 +757,7 @@ const unitSay=(u,L)=>L=='fi'?{cal:'kaloria',m:'metriä',min:'minuuttia'}[u]:{cal
 let chipShown=null;
 function chipRows(){const el=$('chipRows');if(!el)return;const v=$('chipL').value,lock=typeof st!='undefined'&&(st.s==1||st.s==2||st.s==3);
   if(v!==chipShown){chipShown=v;el.innerHTML=chipParse(v).map((x,i)=>`<div class="crow" data-i="${i}"><span class="gh" aria-label="Drag to reorder">≡</span><button type="button" data-d="-1" aria-label="−">−</button><input type="number" inputmode="numeric" min="1" max="9999" value="${x[0]}"><button type="button" data-d="1" aria-label="+">+</button>${x[2]||CARDIO.test(x[1])?`<button type="button" class="un" data-u="1">${x[2]||'reps'}</button>`:''}<span class="nm">${esc(x[1])}</span><button type="button" class="rm" data-rm="1" aria-label="Remove">×</button></div>`).join('')}
-  el.querySelectorAll('input,button').forEach(e=>{e.disabled=lock});$('chipAdd').disabled=$('chipAddB').disabled=lock}
+  el.querySelectorAll('input,button').forEach(e=>{e.disabled=lock});$('movAddIn').disabled=$('movAddBtn').disabled=lock}
 function chipSet(l,keep){const v=chipTxt(l);$('chipL').value=v;if(keep)chipShown=v;$('chipL').dispatchEvent(new Event('change',{bubbles:true}))}
 const isSch=C=>!!C&&((C.m==4&&C.parts&&C.parts.length>0)||(C.m==3&&C.list&&C.list.length>0));
 const W0=()=>({m:0,target:0,per:0,iv:60000,wk:20000,rs:10000,ld:3,cap:0,parts:[],mov:1,names:[],wi:'',rr:0,list:[]});
@@ -789,7 +789,7 @@ function wToUI(o){$('mode').value=o.m;
   if(o.m==5){$('ivW').value=o.wk/1000;$('ivR').value=o.rs/1000;$('ivN').value=Math.max(1,Math.round(o.cap/(o.wk+o.rs)))}}
 const wQS=o=>`&m=${o.m}&cap=${o.cap}&tg=${o.target}&per=${o.per}&iv=${o.iv}&wk=${o.wk}&rs=${o.rs}&ld=${o.ld}&wi=${encodeURIComponent(o.wi)}`;
 function wUI(send){W=wRead();const m=W.m,sh=(id,v)=>{$(id).style.display=v?'':'none'};
-  sh('capBox',m==1||m==2);sh('rrBox',m==0||m==1);sh('tgtBox',m==0||(m==3&&!W.list.length));sh('chipBox',m==3);sh('movCloud',m==3||m==4);$('chipAdd').placeholder=T('Other movement');chipRows();$('chipSum').textContent=W.list.length?T(W.list.some(x=>x[2])?'{0} movements · {1} presses in total':'{0} movements · {1} reps in total',W.list.length,W.target):T('Optional: a list makes each movement a set of its own.');sh('emBox',m==2);sh('schBox',m==4);sh('ivBox',m==5);$('mov').disabled=W.names.length>0;
+  sh('capBox',m==1||m==2);sh('rrBox',m==0||m==1);sh('tgtBox',m==0||(m==3&&!W.list.length));sh('chipBox',m==3);sh('movCloud',m==3||m==4);$('movAddIn').placeholder=T('Other movement');chipRows();$('chipSum').textContent=W.list.length?T(W.list.some(x=>x[2])?'{0} movements · {1} presses in total':'{0} movements · {1} reps in total',W.list.length,W.target):T('Optional: a list makes each movement a set of its own.');sh('emBox',m==2);sh('schBox',m==4);sh('ivBox',m==5);$('mov').disabled=W.names.length>0;
   $('modeNote').textContent=T(W_NOTE[m]);dirty=true;
   if(send&&st.s==0)cmd('wod',wQS(W))}   // so that a workout started by the first rep uses this set-up
 // the set-up that counts: the selector while nothing runs, otherwise what the counter reports
@@ -1182,11 +1182,12 @@ $('chipRows').addEventListener('input',e=>{const r=e.target.closest('.crow');if(
   const end=e=>{if(!row||e.pointerId!==pid)return;const old=chipParse($('chipL').value),order=[...el.querySelectorAll('.crow')].map(r=>+r.dataset.i);row.classList.remove('drag');row=null;
     if(order.some((v,k)=>v!==k)&&order.length==old.length)chipSet(order.map(k=>old[k]))};
   el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end)})();
-$('chipAddB').onclick=()=>{const n=$('chipAdd').value.replace(/[,|"\\:]/g,'').trim().slice(0,16),l=chipParse($('chipL').value);if(!n||l.length>=6)return;l.push(chipDef(n));$('chipAdd').value='';chipSet(l)};
-$('chipAdd').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault();$('chipAddB').click()}});
+$('movAddBtn').onclick=()=>{const n=$('movAddIn').value.replace(/[,|"\\:]/g,'').trim().slice(0,16),l=chipParse($('chipL').value);if(!n||l.length>=6)return;l.push(chipDef(n));$('movAddIn').value='';chipSet(l)};
+$('movAddIn').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault();$('movAddBtn').click()}});
 $('movN').addEventListener('input',movCloud);$('chipL').addEventListener('input',movCloud);$('mode').addEventListener('change',movCloud);movCloud();
 // ---------- F-012: What's new, in plain words; shown once after an update and always in Settings ----------
 const NEWS=[
+ ['2.11.1',['Fixed: the Add field for another movement opened the add-athlete box.'],['Korjattu: Lisää-kenttä toiselle liikkeelle avasi urheilijan lisäyksen.']],
  ['2.11.0',['Row, bike, ski and run in a chipper list count calories, metres or minutes: tap the unit on the row to change it, e.g. 50 cal Row, 400 m Run. One press finishes the movement.'],['Soutu, pyörä, ski ja juoksu chipper-listassa lasketaan kaloreina, metreinä tai minuutteina: vaihda yksikkö napauttamalla sitä, esim. 50 cal Row, 400 m Run. Yksi painallus päättää liikkeen.']],
  ['2.10.1',['The chipper list is easier to edit: one row per movement with − / + and a number, a ≡ handle to drag it into another order, a × to remove it, and an Add field for any other movement.'],['Chipper-lista on helpompi muokata: yksi rivi per liike, − / + ja numero, × poistaa liikkeen ja Lisää-kenttä muille liikkeille.']],
  ['2.10.0',['Chipper can have a movement list (50 Wall balls, 40 Pull-ups …): each movement is one press and the ladder shows where you are.','New Count by choice, Workout: one press finishes the whole workout, handy for a row or a run.'],['Chipperille voi kirjoittaa liikelistan (50 Wall balls, 40 Pull-ups …): yksi painallus per liike ja tikkaat näyttävät missä olet.','Uusi Laske-vaihtoehto Koko treeni: yksi painallus päättää koko treenin, kätevä soutuun tai juoksuun.']],
