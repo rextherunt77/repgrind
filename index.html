@@ -597,7 +597,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.11.1'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.11.2'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -831,7 +831,8 @@ function wTick(o,wv){const C=wC(),L2=V.lang;
   if(st.s!=2||!V.on)return;
   if(wv.ivKey!=null){if(wIvK.sid!==sid)wIvK={sid,k:wv.ivKey};
     else if(wv.ivKey!==wIvK.k){wIvK.k=wv.ivKey;say(C.m==5?W_SAY[wv.rest?'rest':'work'][L2]:W_SAY[C.iv==60000?'min':'rnd'][L2]+' '+wv.rnd,1)}}
-  if(wv.seg!=null){if(wSeg.sid!==sid||wSeg.lane!==sel)wSeg={sid,lane:sel,k:wv.seg,r:wv.rnd,g:wv.togo};
+  if(wv.seg!=null){if(wSeg.sid!==sid||wSeg.lane!==sel){const first=wSeg.sid!==sid;wSeg={sid,lane:sel,k:wv.seg,r:wv.rnd,g:wv.togo};if(first&&!wv.done)say((wv.segName||W_SAY.set[L2]+' '+(wv.seg+1))+', '+wv.segSay,1)}   // the movement to do now is said when the workout starts (2.11.2)
+    
     else if(wv.seg!==wSeg.k){const t=(wv.rnd!==wSeg.r?W_SAY.rnd[L2]+' '+wv.rnd+'. ':'')+(wv.segName||W_SAY.set[L2]+' '+(wv.seg+1))+', '+wv.segSay;wSeg.k=wv.seg;wSeg.r=wv.rnd;wSeg.g=wv.togo;say(t,1)}
     else if(wv.togo!==wSeg.g){if(wv.togo>0&&wv.togo<=3&&wv.togo<wSeg.g)say(wv.togo==3?(L2=='fi'?'3 jäljellä':'3 left'):wv.togo,1);wSeg.g=wv.togo}}
 }
@@ -1187,6 +1188,7 @@ $('movAddIn').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault
 $('movN').addEventListener('input',movCloud);$('chipL').addEventListener('input',movCloud);$('mode').addEventListener('change',movCloud);movCloud();
 // ---------- F-012: What's new, in plain words; shown once after an update and always in Settings ----------
 const NEWS=[
+ ['2.11.2',['The voice now says the first movement when the workout starts, e.g. "Ski, 15 calories".'],['Ääni kertoo ensimmäisen liikkeen heti kun treeni alkaa, esim. "Ski, 15 kaloria".']],
  ['2.11.1',['Fixed: the Add field for another movement opened the add-athlete box.'],['Korjattu: Lisää-kenttä toiselle liikkeelle avasi urheilijan lisäyksen.']],
  ['2.11.0',['Row, bike, ski and run in a chipper list count calories, metres or minutes: tap the unit on the row to change it, e.g. 50 cal Row, 400 m Run. One press finishes the movement.'],['Soutu, pyörä, ski ja juoksu chipper-listassa lasketaan kaloreina, metreinä tai minuutteina: vaihda yksikkö napauttamalla sitä, esim. 50 cal Row, 400 m Run. Yksi painallus päättää liikkeen.']],
  ['2.10.1',['The chipper list is easier to edit: one row per movement with − / + and a number, a ≡ handle to drag it into another order, a × to remove it, and an Add field for any other movement.'],['Chipper-lista on helpompi muokata: yksi rivi per liike, − / + ja numero, × poistaa liikkeen ja Lisää-kenttä muille liikkeille.']],
