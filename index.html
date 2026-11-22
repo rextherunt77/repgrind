@@ -597,7 +597,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.11.2'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.11.3'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -1188,6 +1188,7 @@ $('movAddIn').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault
 $('movN').addEventListener('input',movCloud);$('chipL').addEventListener('input',movCloud);$('mode').addEventListener('change',movCloud);movCloud();
 // ---------- F-012: What's new, in plain words; shown once after an update and always in Settings ----------
 const NEWS=[
+ ['2.11.3',['The guide and the tour now cover the chipper movement list, cardio units, Count by Workout and the voice.'],['Opas ja esittely kertovat nyt chipperin liikelistasta, cardio-yksiköistä, Laske: Koko treeni -valinnasta ja äänestä.']],
  ['2.11.2',['The voice now says the first movement when the workout starts, e.g. "Ski, 15 calories".'],['Ääni kertoo ensimmäisen liikkeen heti kun treeni alkaa, esim. "Ski, 15 kaloria".']],
  ['2.11.1',['Fixed: the Add field for another movement opened the add-athlete box.'],['Korjattu: Lisää-kenttä toiselle liikkeelle avasi urheilijan lisäyksen.']],
  ['2.11.0',['Row, bike, ski and run in a chipper list count calories, metres or minutes: tap the unit on the row to change it, e.g. 50 cal Row, 400 m Run. One press finishes the movement.'],['Soutu, pyörä, ski ja juoksu chipper-listassa lasketaan kaloreina, metreinä tai minuutteina: vaihda yksikkö napauttamalla sitä, esim. 50 cal Row, 400 m Run. Yksi painallus päättää liikkeen.']],
@@ -1220,8 +1221,8 @@ const TOUR=[
  ['wod','#bPlus','Tap the big button for every rep. The first rep starts the clock.','Napauta isoa painiketta jokaisesta toistosta. Ensimmäinen toisto käynnistää kellon.'],
  ['wod','#bTap','Tap mode turns the whole screen into the button: put the phone on the floor and slap it.','Napautustila tekee koko näytöstä painikkeen: laita puhelin lattialle ja läimäise.'],
  ['wod','#tabbar','Four tabs: WOD for counting, Results after the workout, History, and Setup.','Neljä välilehteä: WOD laskemiseen, Tulokset treenin jälkeen, Historia ja Valmistelu.'],
- ['setup','#hWod','Choose the workout here: For time, AMRAP, EMOM, Chipper, rep scheme or intervals.','Valitse treeni tästä: For time, AMRAP, EMOM, Chipper, toistokaava tai intervallit.'],
- ['setup','#cbCard','Count by: one press can count a rep, a whole set or a round.','Laske: yksi painallus voi laskea toiston, kokonaisen sarjan tai kierroksen.'],
+ ['setup','#hWod','Choose the workout here: For time, AMRAP, EMOM, Chipper, rep scheme or intervals. A chipper can have a list of movements.','Valitse treeni tästä: For time, AMRAP, EMOM, Chipper, toistokaava tai intervallit. Chipperillä voi olla lista liikkeistä.'],
+ ['setup','#cbCard','Count by: one press can count a rep, a set or movement, a round, or the whole workout.','Laske: yksi painallus voi laskea toiston, sarjan tai liikkeen, kierroksen tai koko treenin.'],
  ['setup','#setWod','WOD Code: athletes join with their own phones, and a TV can show the leaderboard.','WOD-koodi: urheilijat liittyvät omilla puhelimillaan, ja TV voi näyttää tulostaulun.'],
  ['setup','#helpQ','The guide is always here and in Settings. Have a good WOD!','Opas on aina tässä ja asetuksissa. Hyvää treeniä!']];
 function tour(){if(!TABS)return;let i=0;const ov=document.createElement('div');ov.id='tour';ov.innerHTML='<div id="tourHole"></div><div id="tourBox"><div id="tourT"></div><div class="tb"><small id="tourN"></small><span><button id="tourSkip">'+T('Skip')+'</button> <button id="tourNext" class="p">'+T('Next')+'</button></span></div></div>';
