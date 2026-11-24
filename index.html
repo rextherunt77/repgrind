@@ -1,5 +1,66 @@
 <!DOCTYPE html>
 <html lang="en"><head>
+<script>window.GRIND_APP="rg";</script>
+<script>
+/* RepGrind family diagnostics (RepGrind + WODGrind). Keeps the last 300 log lines on the phone;
+   nothing leaves the phone until the user taps Report on GitHub / Copy report.
+   Logs: errors, unhandled promise errors, console warnings/errors, relay WebSocket open/close/error,
+   and the WebRTC connection state between phones (connected / failed) with the candidate types found
+   (host = same Wi-Fi, srflx = via the internet; no relay = no TURN). */
+(function(){
+  var APP = window.GRIND_APP || "app", KEY = APP + "_log", LOG = [], saveT = 0;
+  try { LOG = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) {}
+  function log(msg){
+    var ts = new Date().toTimeString().slice(0, 8);
+    LOG.push(ts + " " + String(msg).slice(0, 300)); if (LOG.length > 300) LOG = LOG.slice(-300);
+    clearTimeout(saveT); saveT = setTimeout(function(){ try { localStorage.setItem(KEY, JSON.stringify(LOG)); } catch (e) {} }, 500);
+  }
+  addEventListener("error", function(e){ log("ERROR " + (e.message || e) + " @" + String(e.filename || "").split("/").pop() + ":" + e.lineno + ":" + e.colno); });
+  addEventListener("unhandledrejection", function(e){ var r = e.reason; log("REJECTION " + ((r && (r.stack || r.message)) || r)); });
+  ["warn", "error"].forEach(function(k){ var o = console[k]; var n = 0;
+    console[k] = function(){ if (n++ < 100) try { log("console." + k + " " + [].map.call(arguments, function(a){ return a && a.message ? a.message : typeof a === "object" ? JSON.stringify(a) : String(a); }).join(" ")); } catch (e) {} return o.apply(console, arguments); }; });
+  var WS = window.WebSocket;
+  if (WS) {
+    var W = function(u, p){ var w = p !== undefined ? new WS(u, p) : new WS(u);
+      try { var h = new URL(u).host;
+        w.addEventListener("open", function(){ log("relay open " + h); });
+        w.addEventListener("close", function(e){ log("relay closed " + h + " (" + e.code + ")"); });
+        w.addEventListener("error", function(){ log("relay error " + h); }); } catch (e) {}
+      return w; };
+    W.prototype = WS.prototype; W.CONNECTING = 0; W.OPEN = 1; W.CLOSING = 2; W.CLOSED = 3;
+    window.WebSocket = W;
+  }
+  var PC = window.RTCPeerConnection;
+  if (PC) {
+    var n = 0;
+    var P = function(cfg){ var pc = new PC(cfg), id = ++n, types = {};
+      pc.addEventListener("icecandidate", function(e){
+        if (e.candidate && e.candidate.type) types[e.candidate.type] = (types[e.candidate.type] || 0) + 1;
+        else if (!e.candidate) log("rtc#" + id + " own candidates " + JSON.stringify(types)); });
+      pc.addEventListener("connectionstatechange", function(){ log("rtc#" + id + " " + pc.connectionState); });
+      pc.addEventListener("iceconnectionstatechange", function(){ var s = pc.iceConnectionState; if (s === "failed" || s === "disconnected") log("rtc#" + id + " ice " + s); });
+      return pc; };
+    P.prototype = PC.prototype; Object.setPrototypeOf(P, PC);
+    window.RTCPeerConnection = P;
+  }
+  window.GrindDiag = {
+    log: log,
+    lines: function(){ return LOG.slice(); },
+    clear: function(){ LOG = []; try { localStorage.removeItem(KEY); } catch (e) {} },
+    // text report; extra = lines about the app's state; maxChars trims the oldest log lines
+    report: function(title, extra, maxChars){
+      var head = [title + " · " + new Date().toISOString(), navigator.userAgent].concat(extra || []).join("\n");
+      var lines = LOG.slice(), body = head + "\n\nLog:\n" + lines.join("\n");
+      while (maxChars && body.length > maxChars && lines.length > 10) { lines = lines.slice(10); body = head + "\n\nLog (latest):\n" + lines.join("\n"); }
+      return body; },
+    githubUrl: function(repo, title, what, rep){
+      var body = "**" + what + "**\n\n\n\n<details><summary>Diagnostics</summary>\n\n```\n" + rep + "\n```\n</details>";
+      return "https://github.com/" + repo + "/issues/new?labels=bug&title=" + encodeURIComponent(title) + "&body=" + encodeURIComponent(body); }
+  };
+  log("start " + APP + " " + String(navigator.userAgent || "").slice(0, 160) + ((navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches)) ? " (installed)" : ""));
+})();
+
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#111418">
@@ -547,6 +608,12 @@ body.tabbed #pWod .btns{margin-top:0}#bGo{width:100%;min-height:64px;font-size:2
     <p class="note" id="fwMsg"></p>
   </div>
   <div class="note" id="setVer" style="text-align:center"></div>
+  <div class="card" id="bugCard">
+    <h2 id="bugH">Bug report</h2>
+    <p class="note" id="bugNote"></p>
+    <div class="row"><button class="p" id="bugGh" style="flex:1"></button><button id="bugCopy" style="flex:1"></button></div>
+    <div class="row"><button id="bugClear"></button><span class="note" id="bugInfo"></span></div>
+  </div>
   <div class="card" id="newCard">
     <h2>What's new</h2>
     <div id="newList"></div>
@@ -626,7 +693,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.12.2'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.12.3'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -1220,6 +1287,7 @@ $('movAddIn').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault
 $('movN').addEventListener('input',movCloud);$('chipL').addEventListener('input',movCloud);$('mode').addEventListener('change',movCloud);movCloud();
 // ---------- F-012: What's new, in plain words; shown once after an update and always in Settings ----------
 const NEWS=[
+ ['2.12.3',['Bug report in Settings, like in WODGrind: the app keeps a short log on the phone (errors, WOD Code connections) and opens a ready-filled report on GitHub, or copy it to WhatsApp.'],['Vikailmoitus Asetuksissa kuten WODGrindissa: sovellus pitää puhelimessa lyhyttä lokia (virheet, WOD-koodin yhteydet) ja avaa valmiiksi täytetyn ilmoituksen GitHubiin, tai kopioi se WhatsAppiin.']],
  ['2.12.2',['WOD Code connects more reliably: it uses a fixed list of 10 relays, the same as WODGrind.'],['WOD-koodi yhdistää varmemmin: se käyttää kiinteää 10 välityspalvelimen listaa, samaa kuin WODGrind.']],
  ['2.12.1',['App switcher like WODGrind: a squares button next to the gear opens a menu with RepGrind and WODGrind.','Athletes are managed in one place, the row on the WOD screen: + Athlete adds, Edit lets you rename or remove (it asks first).'],['Sovellusvalitsin kuten WODGrindissa: ruutupainike hammasrattaan vieressä avaa valikon, jossa RepGrind ja WODGrind.','Urheilijat hallitaan yhdessä paikassa, WOD-näytön rivillä: + Urheilija lisää, Muokkaa antaa nimetä uudelleen tai poistaa (kysyy ensin).']],
  ['2.12.0',['WOD Code has its own tab in the bottom bar, like in WODGrind: create or join a workout there instead of scrolling Setup.'],['WOD-koodilla on oma välilehti alapalkissa kuten WODGrindissa: luo tai liity treeniin siellä Valmistelun selaamisen sijaan.']],
@@ -1464,4 +1532,23 @@ body.wod-ath #mode,body.wod-ath #capBox,body.wod-ath #tgtBox,body.wod-ath #emBox
 
 </script>
 <script>if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+<script>
+/* Bug report (same as WODGrind): log from GrindDiag, report to GitHub issues or copy */
+(function(){
+  var fi=(window.RC_LANG||document.documentElement.lang)==='fi';
+  var L=fi?{h:"Vikailmoitus",note:"Menikö jotain pieleen? Sovellus pitää tässä puhelimessa lyhyttä lokia (virheet, WOD-koodin yhteydet, puhelimen tyyppi – ei henkilötietoja). Ilmoita GitHubissa avaa valmiiksi täytetyn ilmoituksen tarkistettavaksi ja lähetettäväksi; tai kopioi se ja lähetä WhatsAppissa.",gh:"Ilmoita GitHubissa",copy:"Kopioi ilmoitus",clear:"Tyhjennä loki",lines:function(n){return n===1?"lokissa 1 rivi":"lokissa "+n+" riviä"},copied:"Ilmoitus kopioitu",what:"Mitä tapahtui? (kirjoita tähän)"}
+             :{h:"Bug report",note:"Something went wrong? The app keeps a short log on this phone (errors, WOD Code connections, phone type – no personal data). Report on GitHub opens a ready-filled report for you to check and send; or copy it and send it on WhatsApp.",gh:"Report on GitHub",copy:"Copy report",clear:"Clear log",lines:function(n){return n===1?"1 line in the log":n+" lines in the log"},copied:"Report copied",what:"What happened? (write here)"};
+  var $=function(i){return document.getElementById(i)}; if(!$('bugCard')||!window.GrindDiag) return;
+  var ver=function(){ try{ return APP_VERSION; }catch(e){ return "?"; } };
+  GrindDiag.log("RepGrind v"+ver());
+  $('bugH').textContent=L.h; $('bugNote').textContent=L.note; $('bugGh').textContent=L.gh; $('bugCopy').textContent=L.copy; $('bugClear').textContent=L.clear;
+  var info=function(){ $('bugInfo').textContent=L.lines(GrindDiag.lines().length); }; info(); setInterval(info,5000);
+  var rep=function(max){ return GrindDiag.report("RepGrind "+ver()+" · "+(fi?"fi":"en"),[location.href.split('#')[0]],max); };
+  $('bugGh').onclick=function(){ GrindDiag.log("bug report opened"); window.open(GrindDiag.githubUrl("rextherunt77/repgrind","Bug: RepGrind "+ver(),L.what,rep(5500)),"_blank","noopener"); };
+  $('bugCopy').onclick=function(){ var r=rep(0);
+    if(navigator.share&&/Android|iPhone|iPad/.test(navigator.userAgent)){ navigator.share({text:r}).catch(function(){}); return; }
+    (navigator.clipboard?navigator.clipboard.writeText(r):Promise.reject()).then(function(){ $('bugInfo').textContent=L.copied; },function(){}); };
+  $('bugClear').onclick=function(){ GrindDiag.clear(); info(); };
+})();
+</script>
 </body></html>
