@@ -8,4 +8,4 @@ voice counting (English, Finnish), charts, export to WodConnect, Garmin Connect 
 Your workouts stay on your phone; nothing is sent to this site. WOD Code connects phones directly (WebRTC via public Nostr relays, using
 [Trystero](https://github.com/dmotz/trystero), MIT licence).
 
-Version 2.12.1. This repository holds only the built app; it is published from a private project.
+Version 2.12.2. This repository holds only the built app; it is published from a private project.
