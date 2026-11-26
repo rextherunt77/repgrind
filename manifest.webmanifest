@@ -1,6 +1,6 @@
 {
- "name": "RepGrind",
- "short_name": "RepGrind",
+ "name": "REPGrind",
+ "short_name": "REPGrind",
  "description": "CrossFit rep counter \u2013 count reps, run workouts, WOD Code for several phones.",
  "start_url": "./",
  "scope": "./",
