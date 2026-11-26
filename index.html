@@ -626,7 +626,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.13.5'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.13.6'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -1234,6 +1234,7 @@ $('movAddIn').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault
 $('movN').addEventListener('input',movCloud);$('chipL').addEventListener('input',movCloud);$('mode').addEventListener('change',movCloud);movCloud();
 // ---------- F-012: What's new, in plain words; shown once after an update and always in Settings ----------
 const NEWS=[
+ ['2.13.6',['Settings: the This phone card is now Sounds and backup. The settings for the physical counter (the big button) are folded at the bottom of it, since you don\'t need them without the button.'],['Asetukset: Tämä puhelin -kortti on nyt Äänet ja varmuuskopio. Fyysisen laskurin (ison painikkeen) asetukset on taitettu sen alaosaan, koska niitä ei tarvita ilman painiketta.']],
  ['2.13.5',['The name is now written REPGrind everywhere, like WODGrind and METGrind. The user guide is updated.'],['Nimi kirjoitetaan nyt kaikkialla REPGrind, kuten WODGrind ja METGrind. Käyttöohje on päivitetty.']],
  ['2.13.4',['METGrind is now in the apps menu (the grid button at the top), next to WODGrind.'],['METGrind on nyt sovellusvalikossa (ruudukkopainike ylhäällä) WODGrindin vieressä.']],
  ['2.13.3',['Movements METGrind can count with the camera have an orange dot in the movement list.'],['Liikkeissä, jotka METGrind osaa laskea kameralla, on oranssi piste liikelistassa.']],
@@ -1424,7 +1425,7 @@ try { if (window.claude && claude.use) claude.use('downloads').then(d => { windo
   const local = cfg.mode === 'local';
   const q = s => document.querySelector(s);
   const T = window.T || (x => x);
-  Object.assign(window.RC_FI || {}, {"Start gives a 3-2-1 countdown and resets every athlete. Or just tap +1: the first rep starts the clock.": "Aloita antaa 3-2-1-lähtölaskennan ja nollaa kaikkien urheilijoiden toistot. Tai napauta vain +1: ensimmäinen toisto käynnistää kellon.", "Add each athlete or team and log their reps with <b>+1</b> or <b>Tap mode</b>. Everything is saved on this phone.": "Lisää jokainen urheilija tai joukkue ja kirjaa toistot <b>+1</b>-painikkeella tai <b>napautustilassa</b>. Kaikki tallentuu tähän puhelimeen.", "This phone": "Tämä puhelin", "Data source": "Tietolähde", "This phone only – no button needed": "Vain tämä puhelin – painiketta ei tarvita", "Connect to a REPGrind counter": "Yhdistä laskuriin", "Use": "Käytä", "Beep sounds": "Piippaukset", "Vibrate on tap": "Värinä napautuksesta", "Backup": "Varmuuskopio", "(phone-only data lives in this browser – back it up before clearing browser data)": "(tiedot ovat vain tässä selaimessa – ota varmuuskopio ennen selaintietojen tyhjentämistä)", "Download backup": "Lataa varmuuskopio", "Restore backup": "Palauta varmuuskopio", "Using <b>this phone only</b>. Workouts, athletes and history are stored in this browser.": "Käytössä <b>vain tämä puhelin</b>. Treenit, urheilijat ja historia tallentuvat tähän selaimeen.", "Connected to <b>{0}</b>. Join the counter's Wi-Fi \"RepGrind\" (password crossfit) first.": "Yhdistetty osoitteeseen <b>{0}</b>. Liity ensin laskurin Wi-Fi-verkkoon ”RepGrind” (salasana crossfit).", "This page is opened over https, and browsers block it from talking to the counter over plain http. Open the downloaded RepGrind.html file instead, or simply open http://192.168.4.1 on the counter.": "Tämä sivu on avattu https-yhteydellä, ja selaimet estävät sitä puhumasta laskurille tavallisella http-yhteydellä. Avaa sen sijaan ladattu RepGrind.html-tiedosto tai avaa suoraan http://192.168.4.1.", "Backup restored.": "Varmuuskopio palautettu.", "Could not read that file: {0}": "Tiedostoa ei voitu lukea: {0}"});
+  Object.assign(window.RC_FI || {}, {"Start gives a 3-2-1 countdown and resets every athlete. Or just tap +1: the first rep starts the clock.": "Aloita antaa 3-2-1-lähtölaskennan ja nollaa kaikkien urheilijoiden toistot. Tai napauta vain +1: ensimmäinen toisto käynnistää kellon.", "Add each athlete or team and log their reps with <b>+1</b> or <b>Tap mode</b>. Everything is saved on this phone.": "Lisää jokainen urheilija tai joukkue ja kirjaa toistot <b>+1</b>-painikkeella tai <b>napautustilassa</b>. Kaikki tallentuu tähän puhelimeen.", "This phone": "Tämä puhelin", "Sounds and backup": "Äänet ja varmuuskopio", "Physical counter (button)": "Fyysinen laskuri (painike)", "Workouts, athletes and history are stored on this phone. Back them up before clearing browser data.": "Treenit, urheilijat ja historia tallentuvat tähän puhelimeen. Ota varmuuskopio ennen selaintietojen tyhjentämistä.", "Only needed if you have a REPGrind counter with the big button. Without one, keep This phone only.": "Tarvitaan vain, jos sinulla on REPGrind-laskuri isolla painikkeella. Ilman sitä pidä valittuna Vain tämä puhelin.", "Data source": "Tietolähde", "This phone only – no button needed": "Vain tämä puhelin – painiketta ei tarvita", "Connect to a REPGrind counter": "Yhdistä laskuriin", "Use": "Käytä", "Beep sounds": "Piippaukset", "Vibrate on tap": "Värinä napautuksesta", "Backup": "Varmuuskopio", "(phone-only data lives in this browser – back it up before clearing browser data)": "(tiedot ovat vain tässä selaimessa – ota varmuuskopio ennen selaintietojen tyhjentämistä)", "Download backup": "Lataa varmuuskopio", "Restore backup": "Palauta varmuuskopio", "Using <b>this phone only</b>. Workouts, athletes and history are stored in this browser.": "Käytössä <b>vain tämä puhelin</b>. Treenit, urheilijat ja historia tallentuvat tähän selaimeen.", "Connected to <b>{0}</b>. Join the counter's Wi-Fi \"RepGrind\" (password crossfit) first.": "Yhdistetty osoitteeseen <b>{0}</b>. Liity ensin laskurin Wi-Fi-verkkoon ”RepGrind” (salasana crossfit).", "This page is opened over https, and browsers block it from talking to the counter over plain http. Open the downloaded RepGrind.html file instead, or simply open http://192.168.4.1 on the counter.": "Tämä sivu on avattu https-yhteydellä, ja selaimet estävät sitä puhumasta laskurille tavallisella http-yhteydellä. Avaa sen sijaan ladattu RepGrind.html-tiedosto tai avaa suoraan http://192.168.4.1.", "Backup restored.": "Varmuuskopio palautettu.", "Could not read that file: {0}": "Tiedostoa ei voitu lukea: {0}"});
   // texts
   const n1 = q('#nStart');
   if (n1 && local) n1.textContent = T('Start gives a 3-2-1 countdown and resets every athlete. Or just tap +1: the first rep starts the clock.');
@@ -1434,21 +1435,24 @@ try { if (window.claude && claude.use) claude.use('downloads').then(d => { windo
   // settings
   const det = q('#setDev');
   const https = location.protocol === 'https:';
-  det.innerHTML = `<h2>${T('This phone')}</h2>
-    <p class="note" style="margin-top:10px"><b>${T('Data source')}</b></p>
-    <div class="lrow"><label class="lt"><input type="radio" name="src" value="local"> ${T('This phone only – no button needed')}</label></div>
-    <div class="lrow"><label class="lt"><input type="radio" name="src" value="hub"> ${T('Connect to a REPGrind counter')}</label></div>
-    <div class="row"><input id="hubUrl" style="flex:1" placeholder="http://192.168.4.1"><button id="bHub">${T('Use')}</button></div>
-    <p class="note" id="srcNote"></p>
+  det.innerHTML = `<h2>${T('Sounds and backup')}</h2>
     <div class="row"><label><input type="checkbox" id="snd"> ${T('Beep sounds')}</label>
       <label><input type="checkbox" id="vib"> ${T('Vibrate on tap')}</label></div>
-    <p class="note" style="margin-top:14px"><b>${T('Backup')}</b> ${T('(phone-only data lives in this browser – back it up before clearing browser data)')}</p>
-    <div class="row"><button id="bBk">${T('Download backup')}</button><button id="bRs">${T('Restore backup')}</button><input type="file" id="fRs" accept=".json,application/json" style="display:none"></div>`;
+    <p class="note" style="margin-top:14px"><b>${T('Backup')}</b> ${T('Workouts, athletes and history are stored on this phone. Back them up before clearing browser data.')}</p>
+    <div class="row"><button id="bBk">${T('Download backup')}</button><button id="bRs">${T('Restore backup')}</button><input type="file" id="fRs" accept=".json,application/json" style="display:none"></div>
+    <details id="hwDet" style="margin-top:16px;border-top:1px solid var(--line);padding-top:10px"${local ? '' : ' open'}>
+      <summary style="cursor:pointer;color:var(--mut);font-weight:600;padding:6px 0">${T('Physical counter (button)')}</summary>
+      <p class="note" style="margin-top:8px"><b>${T('Data source')}</b></p>
+      <div class="lrow"><label class="lt"><input type="radio" name="src" value="local"> ${T('This phone only – no button needed')}</label></div>
+      <div class="lrow"><label class="lt"><input type="radio" name="src" value="hub"> ${T('Connect to a REPGrind counter')}</label></div>
+      <div class="row"><input id="hubUrl" style="flex:1" placeholder="http://192.168.4.1"><button id="bHub">${T('Use')}</button></div>
+      <p class="note" id="srcNote"></p>
+    </details>`;
   document.querySelectorAll('input[name=src]').forEach(r => { r.checked = r.value === cfg.mode; r.onchange = () => { cfg.mode = r.value; RC_saveCfg(); location.reload(); }; });
   q('#hubUrl').value = cfg.hub;
   q('#bHub').onclick = () => { cfg.hub = q('#hubUrl').value.trim() || 'http://192.168.4.1'; cfg.mode = 'hub'; RC_saveCfg(); location.reload(); };
   q('#srcNote').innerHTML = local
-    ? T('Using <b>this phone only</b>. Workouts, athletes and history are stored in this browser.')
+    ? T('Only needed if you have a REPGrind counter with the big button. Without one, keep This phone only.')
     : T('Connected to <b>{0}</b>. Join the counter\'s Wi-Fi "RepGrind" (password crossfit) first.', cfg.hub) +
       (https && cfg.hub.startsWith('http:') ? '<br><span class="bad">' + T('This page is opened over https, and browsers block it from talking to the counter over plain http. Open the downloaded RepGrind.html file instead, or simply open http://192.168.4.1 on the counter.') + '</span>' : '');
   cfg.vib = cfg.vib !== false;
