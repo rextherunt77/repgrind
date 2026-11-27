@@ -626,7 +626,7 @@ function saveFile(name,text,type){
 window.RC_ask=ask;window.RC_saveFile=saveFile;
 
 const $=id=>document.getElementById(id);
-const APP_VERSION='2.13.6'; // keep in step with CHANGELOG.md
+const APP_VERSION='2.13.7'; // keep in step with CHANGELOG.md
 $('ver').textContent='v'+APP_VERSION;
 const MAXL=8;
 let L={},order=[],sel=0,sid=0,st={s:0,e:0,cap:0,b:0},fetchT=0,busy=false,dirty=true,hist=[],pend={};
@@ -818,7 +818,7 @@ function wToUI(o){$('mode').value=o.m;
 const wQS=o=>`&m=${o.m}&cap=${o.cap}&tg=${o.target}&per=${o.per}&iv=${o.iv}&wk=${o.wk}&rs=${o.rs}&ld=${o.ld}&wi=${encodeURIComponent(o.wi)}`;
 // METGrind (camera metcon): the movement list as a link. Only movements METGrind can count with the camera.
 const METGRIND='https://rextherunt77.github.io/metgrind/';setInterval(()=>{try{metUpd()}catch(e){}},2500);
-const metId=n=>{n=String(n).toLowerCase();return /wall\s*ball/.test(n)?'wb':/air\s*squat|^squats?$/.test(n)?'squat':/lunge/.test(n)?'lunge':/burpee/.test(n)?(/jump|over/.test(n)?'burpeej':'burpee'):/swing/.test(n)?(/amer|usa/.test(n)?'kba':'kbr'):null};
+const metId=n=>{n=String(n).toLowerCase();return /wall\s*ball/.test(n)?'wb':/air\s*squat|^squats?$/.test(n)?'squat':/lunge/.test(n)?'lunge':/^pull[\s-]*ups?$/.test(n.trim())?'pu':/^push[\s-]*ups?$/.test(n.trim())?'pushup':/^sit[\s-]*ups?$/.test(n.trim())?'situp':/^toes?[\s-]*to[\s-]*bars?$/.test(n.trim())?'ttb':/^box\s*jumps?$/.test(n.trim())?'boxj':/^box\s*jump[\s-]*overs?$/.test(n.trim())?'boxo':/^single[\s-]*unders?$/.test(n.trim())?'su':/burpee/.test(n)?(/jump|over/.test(n)?'burpeej':'burpee'):/swing/.test(n)?(/amer|usa/.test(n)?'kba':'kbr'):null};
 function metSets(){const m=+$('mode').value;let s=[];
   if(m==3)s=chipParse($('chipL').value).map(x=>[x[2]?0:x[0],x[1]]);
   else if(m==4){const parts=($('sch').value.match(/\d+/g)||[]).map(Number).filter(x=>x>0).slice(0,12),nm=$('movN').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,6);
@@ -1204,7 +1204,7 @@ function histRace(k){hOpen(+k.slice(1))}
 function loadRaceHist(){loadHist()}   // after every reset: the new workout's results and rep chart together
 document.addEventListener('click',e=>{const b=e.target.closest('.rhi');if(!b)return;const i=+b.dataset.i,box=document.querySelector(`.rhb[data-k="h${i}"]`);if(box.innerHTML){box.innerHTML='';return}hOpen(i)});
 // ---------- F-006: movement cloud: tap to add a movement, tap again to take it away; the order of the taps is the order ----------
-const MOVES=[['Gymnastics',['Pull-ups','Chest-to-bar','Toes-to-bar','Push-ups','Handstand push-ups','Ring dips','Muscle-ups','Sit-ups','Air squats','Burpees','Jump burpees','Box jumps','Lunges','Double-unders']],
+const MOVES=[['Gymnastics',['Pull-ups','Chest-to-bar','Toes-to-bar','Push-ups','Handstand push-ups','Ring dips','Muscle-ups','Sit-ups','Air squats','Burpees','Jump burpees','Box jumps','Box jump overs','Lunges','Single-unders','Double-unders']],
   ['Weightlifting',['Thrusters','Deadlifts','Cleans','Power cleans','Clean & jerks','Snatches','Front squats','Overhead squats','Push press','Wall balls']],
   ['Kettlebell & dumbbell',['KB Swings RUS','KB Swings USA','Goblet squats','DB snatches','Devil press']],['Cardio',['Run','Row','Bike','Ski']]];
 const movList=()=>$('movN').value.split(',').map(x=>x.trim()).filter(Boolean);
@@ -1234,6 +1234,7 @@ $('movAddIn').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault
 $('movN').addEventListener('input',movCloud);$('chipL').addEventListener('input',movCloud);$('mode').addEventListener('change',movCloud);movCloud();
 // ---------- F-012: What's new, in plain words; shown once after an update and always in Settings ----------
 const NEWS=[
+ ['2.13.7',['METGrind counts more movements: Pull-ups, Push-ups, Sit-ups, Toes-to-bar, Box jumps, Box jump overs and Single-unders have the orange dot, and a workout made of them opens in METGrind. Single-unders and Box jump overs are new in the list.'],['METGrind laskee lisää liikkeitä: Pull-ups, Push-ups, Sit-ups, Toes-to-bar, Box jumps, Box jump overs ja Single-unders on merkitty oranssilla pisteellä, ja niistä tehty treeni aukeaa METGrindissä. Single-unders ja Box jump overs ovat uusia listassa.']],
  ['2.13.6',['Settings: the This phone card is now Sounds and backup. The settings for the physical counter (the big button) are folded at the bottom of it, since you don\'t need them without the button.'],['Asetukset: Tämä puhelin -kortti on nyt Äänet ja varmuuskopio. Fyysisen laskurin (ison painikkeen) asetukset on taitettu sen alaosaan, koska niitä ei tarvita ilman painiketta.']],
  ['2.13.5',['The name is now written REPGrind everywhere, like WODGrind and METGrind. The user guide is updated.'],['Nimi kirjoitetaan nyt kaikkialla REPGrind, kuten WODGrind ja METGrind. Käyttöohje on päivitetty.']],
  ['2.13.4',['METGrind is now in the apps menu (the grid button at the top), next to WODGrind.'],['METGrind on nyt sovellusvalikossa (ruudukkopainike ylhäällä) WODGrindin vieressä.']],
